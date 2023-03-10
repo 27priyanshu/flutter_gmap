@@ -13,13 +13,34 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  late GoogleMapController _mapController;
+  Map<String, Marker> _markers = {};
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: GoogleMap(
-          initialCameraPosition: CameraPosition(
-        target: LatLng(0, 0),
-      )),
+        initialCameraPosition:
+            CameraPosition(target: currentLocation, zoom: 14),
+        onMapCreated: (controller) {
+          _mapController = controller;
+          addMarker('test', currentLocation);
+        },
+        markers: _markers.values.toSet(),
+      ),
     );
+  }
+
+  addMarker(String Id, LatLng location) {
+    var marker = Marker(
+      markerId: MarkerId(Id),
+      position: location,
+      infoWindow: const InfoWindow(
+        title: 'Title of place',
+        snippet: 'some description of the place',
+      ),
+    );
+
+    _markers[Id] = marker;
+    setState(() {});
   }
 }
